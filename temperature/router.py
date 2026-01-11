@@ -11,19 +11,12 @@ from weather_client import fetch_current_temp
 
 router = APIRouter()
 
-@router.get("/temperatures/", response_model=list[schemas.Temperature])
-async def read_temperatures(db: Annotated[AsyncSession, Depends(get_db)]):
-    return await crud.get_all_temperature_records(db=db)
-
 @router.get("/temperatures/?city_id={city_id}/", response_model=list[schemas.Temperature])
-async def read_temperature_by_city_id(db: Annotated[AsyncSession, Depends(get_db)], city_id: int):
-    temp = await crud.get_temperature_by_city_id(db=db, city_id=city_id)
+async def read_temperatures(db: Annotated[AsyncSession, Depends(get_db)], city_id: int | None = None):
+    if city_id is None:
+        return await crud.get_all_temperature_records(db=db)
 
-    if temp is None:
-        raise HTTPException(status_code=404, detail="Temperature with this city not found")
-
-    return temp
-
+    return await crud.get_temperature_by_city_id(db=db, city_id=city_id)
 
 @router.post("/temperatures/update/", response_model=list[schemas.Temperature])
 async def update_temperatures(db: Annotated[AsyncSession, Depends(get_db)]):
