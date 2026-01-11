@@ -22,7 +22,7 @@ async def get_city_by_name(db: AsyncSession, city_name: str):
     return city.first()
 
 
-async def create_city(db: AsyncSession, city: schemas.City):
+async def create_city(db: AsyncSession, city: schemas.CityCreate):
     city = models.City(
         name=city.name,
         additional_info=city.additional_info

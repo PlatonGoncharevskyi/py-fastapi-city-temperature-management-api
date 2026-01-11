@@ -23,7 +23,7 @@ async def read_city_by_id(city_id: int, db: Annotated[AsyncSession, Depends(get_
     return city
 
 @router.post("/cities/", response_model=schemas.City)
-async def create_city(city: schemas.City, db: Annotated[AsyncSession, Depends(get_db)]):
+async def create_city(city: schemas.CityCreate, db: Annotated[AsyncSession, Depends(get_db)]):
     existing_city = await crud.get_city_by_name(db=db, city_name=city.name)
     if existing_city:
         raise HTTPException(status_code=400, detail="This city already exist with this name")

@@ -16,14 +16,14 @@ async def get_temperature_by_city_id(city_id: int, db: AsyncSession):
     temp = await db.scalars(
         select(models.Temperature).where(models.Temperature.city_id == city_id)
     )
-    return temp.first()
+    return temp.all()
 
 
 async def create_temperature(db: AsyncSession, city_id: int, temperature: float):
     record = models.Temperature(
         city_id=city_id,
         temperature=temperature,
-        datetime=datetime.now(timezone.utc),
+        date_time=datetime.now(timezone.utc),
     )
     db.add(record)
     await db.flush()

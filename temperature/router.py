@@ -15,7 +15,7 @@ router = APIRouter()
 async def read_temperatures(db: Annotated[AsyncSession, Depends(get_db)]):
     return await crud.get_all_temperature_records(db=db)
 
-@router.get("/temperatures/?city_id={city_id}/", response_model=schemas.Temperature)
+@router.get("/temperatures/?city_id={city_id}/", response_model=list[schemas.Temperature])
 async def read_temperature_by_city_id(db: Annotated[AsyncSession, Depends(get_db)], city_id: int):
     temp = await crud.get_temperature_by_city_id(db=db, city_id=city_id)
 
@@ -36,6 +36,7 @@ async def update_temperatures(db: Annotated[AsyncSession, Depends(get_db)]):
 
     for city, result in zip(cities, results):
         if isinstance(result, Exception):
+            print(f"[fetch error] {city.name}: {repr(result)}")
             continue
 
         row = await crud.create_temperature(
